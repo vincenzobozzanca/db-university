@@ -93,3 +93,59 @@ Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti
 	JOIN courses ON courses.degree_id = degrees.id
 	JOIN teachers ON courses.id= teachers.id
 	ORDER BY degrees.name ASC, courses.name ASC, teacher_name ASC;
+
+Selezionare tutti i docenti che insegnano nel Dipartimento di Matematica (54)
+	
+	SELECT DISTINCT 
+		teachers.id,
+		CONCAT(teachers.name, ' ', teachers.surname) AS teacher_name
+	FROM teachers
+	JOIN courses ON teachers.id = courses.id
+	JOIN departments ON courses.id = departments.id
+	WHERE departments.name LIKE '%Matematica%'
+	ORDER BY teacher_name ASC;
+
+Es group by 
+
+Contare quanti iscritti ci sono stati ogni anno
+
+	SELECT YEAR(enrolment_date) AS enrollment_year, COUNT(*) AS total_students
+	FROM students
+	GROUP BY YEAR(enrolment_date)
+	ORDER BY enrollment_year;
+
+Contare gli insegnanti che hanno l'ufficio nello stesso edificio
+
+	SELECT office_address, COUNT(*) AS total_teachers
+	FROM teachers
+	GROUP BY office_address
+	ORDER BY total_teachers DESC;
+
+Calcolare la media dei voti di ogni appello d'esame
+
+	SELECT 
+		e.id AS exam_id,
+		e.date AS exam_date,
+		AVG(es.vote) AS average_vote
+	FROM 
+		exams e
+	JOIN 
+		exam_student es
+	ON 
+		e.id = es.exam_id
+	GROUP BY 
+		e.id, e.date
+	ORDER BY 
+		e.date;
+
+Contare quanti corsi di laurea ci sono per ogni dipartimento
+
+	SELECT 
+		department_id, 
+		COUNT(*) AS total_degrees
+	FROM 
+		degrees
+	GROUP BY 
+		department_id
+	ORDER BY 
+		total_degrees DESC;
